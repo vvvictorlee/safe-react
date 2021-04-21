@@ -31,17 +31,17 @@ jobs:
         run: sudo apt-get update && sudo apt-get install libudev-dev libusb-1.0-0-dev
 
       # Windows build patches
-      - name: Patch node gyp on windows to support Visual Studio 2019
-        if: startsWith(matrix.os, 'windows')
-        shell: powershell
-        run: |
-          yarn global add --production windows-build-tools --vs2015 --msvs_version=2015
-      - name: Install node-gyp
-        if: startsWith(matrix.os, 'windows')
-        shell: powershell
-        run: |
-          yarn global add node-gyp@7.1.2
-          yarn config set node_gyp "$_\node_modules\node-gyp\bin\node-gyp.js"
+      # - name: Patch node gyp on windows to support Visual Studio 2019
+      #   if: startsWith(matrix.os, 'windows')
+      #   shell: powershell
+      #   run: |
+      #     yarn global add --production windows-build-tools --vs2015 --msvs_version=2015
+      # - name: Install node-gyp
+      #   if: startsWith(matrix.os, 'windows')
+      #   shell: powershell
+      #   run: |
+      #     yarn global add node-gyp@7.1.2
+      #     yarn config set node_gyp "$_\node_modules\node-gyp\bin\node-gyp.js"
 
       # Load node_modules cache action
       - uses: actions/cache@v2
@@ -53,6 +53,11 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 14
+
+      - uses: actions/setup-python@v1
+        if: startsWith(matrix.os, 'windows')
+        with:
+          python-version: "2.7.x"
 
       - name: Run yarn install
         run: yarn install --frozen-lockfile --network-concurrency 1
